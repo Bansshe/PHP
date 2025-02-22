@@ -6,7 +6,6 @@ require_once __DIR__ . '/app/Controller/HomeController.php';
 require_once __DIR__ . '/app/Controller/NotFoundController.php';
 require_once __DIR__ . '/app/Controller/Admin/AdminController.php';
 require_once __DIR__ . '/app/Model/UsuarioModel.php';
-require_once __DIR__ . '/app/Model/Empresa/EmpresaModel.php';
 require_once __DIR__ . '/lib/Database/Connection.php';
 require_once __DIR__ . '/vendor/autoload.php';
 require_once __DIR__ . '/lib/Language/lang.php';
@@ -93,10 +92,9 @@ class Application {
                 'Servidor' => $config['Servidor'],
             ],
             'Usuario' => UsuarioModel::getUserById($_SESSION['id']),
-            'Empresa' => EmpresaModel::getEmpresaById($_SESSION['id']),
             'DynamicContent' => '{{DynamicContent}}',
         ];
-        
+
         $conteudoShared = $shared->render(context: $parametros);
         
         $template = str_replace('{{DynamicContent}}', $conteudoDynamic, $conteudoShared);

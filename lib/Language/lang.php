@@ -3,11 +3,7 @@ class Idioma {
 
     public function Idioma($str) {
 
-        $idiomaEmpresa = EmpresaModel::getEmpresaById(1)->Idioma ?? null;
-
-        if ($idiomaEmpresa != null) {
-            $language = $idiomaEmpresa;
-        } else if ($_SERVER['HTTP_ACCEPT_LANGUAGE']) {
+        if ($_SERVER['HTTP_ACCEPT_LANGUAGE']) {
             $language = $_SERVER['HTTP_ACCEPT_LANGUAGE'];
         } else {
             $language = 'en';
