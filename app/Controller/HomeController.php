@@ -5,8 +5,7 @@ class HomeController
     public function Index()
     {
         try {
-            $usuario = UsuarioModel::getUserById($_SESSION['Id']);
-
+            $usuario = UsuarioModel::getUserById($_SESSION['id']);
             $loader = new \Twig\Loader\FilesystemLoader('app/View');
             $twig = new \Twig\Environment($loader);
             $template = $twig->load('index.html');
