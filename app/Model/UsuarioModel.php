@@ -2,12 +2,12 @@
 
 class UsuarioModel
 {
-    public static function getUserById(int $id)
+    public static function getUserById(string $id)
     {
         $conn = Connection::getConn();
 
         try {
-            $sql = "SELECT Id, Login, Name FROM users WHERE id = :id";
+            $sql = "SELECT Id, Login, Name, Active, Created FROM users WHERE Id = :id";
             $stmt = $conn->prepare($sql);
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
@@ -32,7 +32,7 @@ class UsuarioModel
         $conn = Connection::getConn();
 
         try {
-            $sql = "SELECT Id, Registro, Email, Nome, Tel, CPF, Ativo, CompanyId FROM users ORDER BY id DESC";
+            $sql = "SELECT Id, Login, Name FROM users ORDER BY Id DESC";
             $stmt = $conn->prepare($sql);
             $stmt->execute();
 
@@ -53,14 +53,14 @@ class UsuarioModel
         }
     }
 
-    public static function getFotoUsuarioById(int $id)
+    public static function getFotoUsuarioById(string $id)
     {
         $conn = Connection::getConn();
 
         try {
-            $sql = "SELECT ProfilePicture FROM users WHERE id = :id";
+            $sql = "SELECT ProfilePicture FROM users WHERE Id = :id";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_STR);
             $stmt->execute();
 
             $imagem = $stmt->fetchColumn();
@@ -82,13 +82,13 @@ class UsuarioModel
         }
     }
 
-    public static function trocarFotoUsuario(int $id, string $base64) {
+    public static function trocarFotoUsuario(string $id, string $base64) {
         $conn = Connection::getConn();
     
         try {
-            $sql = "UPDATE users SET ProfilePicture = :base64 WHERE id = :id";
+            $sql = "UPDATE users SET ProfilePicture = :base64 WHERE Id = :id";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_STR);
             $stmt->bindParam(':base64', $base64, PDO::PARAM_STR);
             $stmt->execute();
     
