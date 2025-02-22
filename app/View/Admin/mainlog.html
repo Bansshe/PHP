@@ -1,0 +1,112 @@
+<style>
+    table {
+      margin-top: 1%;
+      margin-left: 1%;
+      margin-right: 1%;
+      width: 98%;
+    }
+  
+    table tr th {
+      padding-bottom: 10px;
+      border-bottom: solid;
+    }
+  
+    table tr td {
+      padding-top: 10px;
+      padding-bottom: 10px;
+      cursor: pointer;
+    }
+  
+    .modal {
+          display: none;
+          position: fixed;
+          z-index: 1;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 100%;
+          overflow: auto;
+          background-color: rgba(0, 0, 0, 0.1);
+      }
+  
+      .modal-content {
+          background-color: #fefefe;
+          margin: auto;
+          padding: 20px;
+          border: 1px solid #888;
+          width: 75%;
+          max-width: 600px;
+          position: relative;
+          top: 20%; 
+      }
+  
+      .close {
+          color: #aaa;
+          float: right;
+          font-size: 28px;
+          font-weight: bold;
+          cursor: pointer;
+      }
+  </style>
+  <body>
+    <div id="myModal" class="modal">
+      <div class="modal-content">
+        <h2>Usuario</h2>
+        <div id="modalBody"></div>
+        <br>
+        <button class="btn btn-secondary" onclick="closeModal()">Fechar</button>
+      </div>
+    </div>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>{{ _.Idioma('Function')}}</th>
+          <th>{{ _.Idioma('Date')}}</th>
+          <th>{{ _.Idioma('Responsable')}}</th>
+          <th>{{ _.Idioma('Company')}}</th>
+        </tr>
+      </thead>
+      {% for log in logs %}
+      <tr onclick="exibirUsuario( {{ log.Id }} )">
+        <td>{{log.Function}}</td>
+        <td>{{log.Date}}</td>
+        <td>{{log.ResponsavelNome}}</td>
+        <td>{{log.CompanyName}}</td>
+        </tr>
+      {% endfor %}
+    </table>
+  </body>
+  </html>
+  <script>
+    function exibirUsuario(id) {
+      $.ajax({
+            url: "/Admin/GetLogById?id=" + id,
+            type: "GET",
+            dataType: "json",
+            success: function(data) {
+                console.log("Resposta:", data);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error("Erro:", textStatus, errorThrown);
+            }
+        });
+      }
+  
+      function closeModal() {
+          document.getElementById("myModal").style.display = "none";
+      }
+  
+      window.onclick = function(event) {
+          var modal = document.getElementById("myModal");
+          if (event.target == modal) {
+              closeModal();
+          }
+      }
+  
+      document.addEventListener('keydown', function(event) {
+          if (event.key === "Escape") {
+              closeModal();
+          }
+      });
+      
+  </script>

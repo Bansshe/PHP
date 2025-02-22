@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css"
+        integrity="sha512-zxBiDORGDEAYDdKLuYU9X/JaJo/DPzE42UubfBw9yg8Qvb2YRRIQ8v4KsGHOx2H1/+sdSXyXxLXv5r7tHc9ygg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"
+        integrity="sha512-Gs+PsXsGkmr+15rqObPJbenQ2wB3qYvTHuJO6YJzPe/dTLvhy0fmae2BcnaozxDo5iaF8emzmCZWbQ1XXiX2Ig=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        .cr-boundary {
+            border-radius: 10px;
+        }
+
+        #crop {
+            margin-top: 30px;
+            height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: opacity 1s ease-in-out, height 1s ease-in-out;
+        }
+
+        #divProfilePicture {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .modal {
+            z-index: 999999999 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="col-lg-8 mx-auto">
+        <div class="card radius-10">
+            <div class="card-body">
+                <form id="imagemPerfil">
+                    <h5 class="mb-3">Editar Perfil</h5>
+                    <div class="mb-4 d-flex flex-column gap-3 align-items-center justify-content-center">
+                        <div id="divProfilePicture" class="user-change-photo shadow"
+                            style="background-color: transparent;">
+                            <img style="zoom: 1%; cursor: pointer" id="profilePicture"
+                                src="https://superstorefinder.net/support/wp-content/uploads/2018/01/grey_style.gif"
+                                alt="Foto de Perfil">
+                        </div>
+                        <button type="button" id="imgProfileAlterar"
+                            class="btn btn-outline-primary btn-sm radius-30 px-4" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop" onclick="abrirModal()">
+                            Alterar imagem
+                        </button>
+                    </div>
+
+                    <!-- Modal para alterar imagem -->
+                    <div class="modal fade" id="staticBackdrop" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h2 class="modal-title fs-5" id="exampleModalLabel">Alterar imagem de perfil</h2>
+                                </div>
+                                <div class="modal-body">
+                                    <input type="hidden" name="base64_image" id="base64-image">
+                                    <input id="fileupload" type="file" accept="image/png, image/jpeg"
+                                        class="form-control">
+                                    <div id="crop"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-warning" id="btnCancelImg"
+                                        style="margin-right: auto">Remover</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-success" id="btnSaveImg">Salvar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-0 mt-4">Informações</h5>
+                    <hr>
+                    <div class="row g-3">
+                        <div class="col-9">
+                            <label class="form-label">E-mail</label>
+                            <input type="text" class="form-control" value="{{Usuario.Email}}" maxlength="100"
+                                onkeypress="return validarEmail(event)">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">CPF</label>
+                            <input id="cpfInput" type="text" class="form-control" value="{{Usuario.CPF}}"
+                                onkeypress="return validarCpf(event)">
+                        </div>
+                        <div class="col-9">
+                            <label class="form-label">Nome completo</label>
+                            <input type="text" class="form-control" value="{{Usuario.Nome}}"
+                                onkeypress="return validarNome(event)">
+                        </div>
+                        <div class="col-3">
+                            <label class="form-label">Telefone</label>
+                            <input id="telefoneInput" type="text" class="form-control" value="{{Usuario.Tel}}"
+                                onkeypress="return validarTelefone(event)">
+                        </div>
+                    </div>
+                    <h5 class="mb-0 mt-4">Endereço</h5>
+                    <hr>
+                    <div class="row g-3">
+                        <div class="col-4">
+                            <label class="form-label">CEP</label>
+                            <input id="cepInput" type="text" class="form-control" value=""
+                                onkeypress="return validarCep(event)">
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label">Número</label>
+                            <input id="numberVal" maxlength="6" class="form-control" value=""
+                                onkeypress="return validarNumero(event)">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Logradouro</label>
+                            <input type="text" maxlength="150" class="form-control" value=""
+                                onkeypress="return validarNome(event)">
+                        </div>
+                        <div class="col-5">
+                            <label class="form-label">Cidade</label>
+                            <input id="cidadeVal" maxlength="150" class="form-control" value=""
+                                onkeypress="return validarNome(event)">
+                        </div>
+                        <div class="col-5">
+                            <label class="form-label">País</label>
+                            <input id="paisVal" maxlength="150" class="form-control" value=""
+                                onkeypress="return validarNome(event)">
+                        </div>
+                        <div class="col-2">
+                            <label class="form-label">Estado</label>
+                            <select id="ufVal" class="form-control">
+                                <option value="" hidden>Selecionar</option>
+                                <option value="AC">AC</option>
+                                <option value="AL">AL</option>
+                                <option value="AP">AP</option>
+                                <option value="AM">AM</option>
+                                <option value="BA">BA</option>
+                                <option value="CE">CE</option>
+                                <option value="DF">DF</option>
+                                <option value="ES">ES</option>
+                                <option value="GO">GO</option>
+                                <option value="MA">MA</option>
+                                <option value="MT">MT</option>
+                                <option value="MS">MS</option>
+                                <option value="MG">MG</option>
+                                <option value="PA">PA</option>
+                                <option value="PB">PB</option>
+                                <option value="PR">PR</option>
+                                <option value="PE">PE</option>
+                                <option value="PI">PI</option>
+                                <option value="RJ">RJ</option>
+                                <option value="RN">RN</option>
+                                <option value="RS">RS</option>
+                                <option value="RO">RO</option>
+                                <option value="RR">RR</option>
+                                <option value="SC">SC</option>
+                                <option value="SP">SP</option>
+                                <option value="SE">SE</option>
+                                <option value="TO">TO</option>
+                            </select>
+                        </div>
+                    </div>
+                    <h5 class="mb-0 mt-4">Empresa</h5>
+                    <hr>
+                    <div class="row g-3">
+                        <div class="col-2">
+                            <label class="form-label">ID</label>
+                            <input type="text" class="form-control" value="{{Empresa.Id}}" readonly>
+                        </div>
+                        <div class="col-10">
+                            <label class="form-label">Nome da Empresa</label>
+                            <input type="text" class="form-control" value="{{Empresa.Nome}}" readonly>
+                        </div>
+                    </div>
+
+                    <h5 class="mb-0 mt-4">Outros</h5>
+                    <hr>
+                    <div class="col-12">
+                        <label class="form-label">Membro desde</label>
+                        <input type="text" class="form-control" value="{{Usuario.Registro}}" readonly>
+                    </div>
+                    <div class="text-start mt-3">
+                        <button type="button" class="btn btn-primary px-4">Salvar</button>
+                    </div>
+            </div>
+            </form>
+        </div>
+    </div>
+
+</html>
+<script>
+
+    function btnSalvarPerfil() {
+        var idsToDisable = ["btnSalvarPerfil", "imgProfileAlterar"];
+        var idsToHide = ["btnSalvarPerfil", "imgProfileAlterar"];
+        var idsToReadOnly = ["mailEditavel", "nameEditavel", "telEditavel", "cpfEditavel"];
+        var idsToEnable = ["btnEditarPerfil"];
+        var idsToShow = ["btnEditarPerfil"];
+
+        idsToDisable.forEach(id => document.getElementById(id).disabled = true);
+        idsToHide.forEach(id => document.getElementById(id).hidden = true);
+        idsToReadOnly.forEach(id => document.getElementById(id).readOnly = true);
+        idsToEnable.forEach(id => document.getElementById(id).disabled = false);
+        idsToShow.forEach(id => document.getElementById(id).hidden = false);
+    }
+
+    function toggleEditPerfil() {
+        var inputs = document.getElementsByClassName("inputEditavel");
+        var imgProfileAlterar = document.getElementById("imgProfileAlterar");
+        var btnSavePerfil = document.getElementById("btnSalvarPerfil");
+
+        Array.from(inputs).forEach(input => input.readOnly = !input.readOnly);
+
+        imgProfileAlterar.disabled = !imgProfileAlterar.disabled;
+        btnSavePerfil.hidden = !btnSavePerfil.hidden;
+    }
+
+    $('#divProfilePicture   ').on('click', function () {
+        $('#staticBackdrop').modal('show');
+    });
+
+    function validarEmail(event) {
+        const char = String.fromCharCode(event.which);
+        const regex = /^[a-zA-Z0-9@._-]*$/;
+        return regex.test(char);
+    }
+
+    function validarCpf(event) {
+        const char = String.fromCharCode(event.which);
+        const regex = /^[0-9]*$/;
+        return regex.test(char);
+    }
+
+    function validarNome(event) {
+        const char = String.fromCharCode(event.which);
+        const regex = /^[a-zA-ZÀ-ÿ\s]*$/;
+        return regex.test(char);
+    }
+
+    function validarTelefone(event) {
+        const char = String.fromCharCode(event.which);
+        const regex = /^[0-9]*$/;
+        return regex.test(char);
+    }
+
+    function validarCep(event) {
+        const char = String.fromCharCode(event.which);
+        const regex = /^[0-9]*$/;
+        return regex.test(char);
+    }
+
+    function validarNumero(event) {
+        const char = String.fromCharCode(event.which);
+        const regex = /^[0-9]*$/;
+        return regex.test(char);
+    }
+
+    function getProfilePicture() {
+        $.ajax({
+            url: '/api/UsuarioAPI/?action=getUsuarioProfilePicture&id={{Usuario.Id}}&token=BOIB23PNR23YIO5BN23JHB5312PIB423UN',
+            method: 'GET',
+            success: function (data) {
+                $('#profilePicture').attr('src', data);
+            },
+            error: function (xhr, status, error) {
+                console.error('Erro ao carregar a imagem:', error);
+            }
+        });
+    }
+
+    window.addEventListener('load', getProfilePicture);
+
+    $(document).ready(function () {
+        var preview = new Croppie($("#crop")[0], {
+            viewport: { width: 200, height: 200, type: 'circle' },
+            boundary: { width: 250, height: 250 },
+            enableExif: true,
+            enforceBoundary: true,
+        });
+
+        $('#fileupload').change(function (event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function () {
+                var base64data = reader.result;
+                preview.bind({ url: base64data }).then(function () {
+                    $("#crop").css({ height: "300px", opacity: 1 });
+                });
+            };
+
+            reader.readAsDataURL(file);
+        });
+
+        $("#imagemPerfil").on("submit", function (e) {
+            e.preventDefault();
+
+            preview.result("base64").then(function (result) {
+                $("#base64-image").val(result);
+                var id = '{{Usuario.Id}}';
+                $.ajax({
+                    url: '/Usuario/alterarImagemDePerfil',
+                    type: 'POST',
+                    data: {
+                        base64: result,
+                        id: parseInt(id)
+                    },
+                    success: function (response) {
+                        $("#NavBarProfilePicture").css("opacity", 0);
+                        setTimeout(() => { $("#NavBarProfilePicture").attr('src', result); }, 500);
+                        setTimeout(() => { $("#NavBarProfilePicture").css("opacity", 1); }, 500);
+                        $('#profilePicture').attr('src', result);
+                        $("#crop").css("opacity", 0);
+                        setTimeout(() => { $("#crop").css({ "height": "0" }) }, 350);
+                        setTimeout(() => { $("#staticBackdrop").modal('hide'); }, 1350);
+                        $('#fileupload').val("");
+                    }
+                });
+            });
+        });
+
+        setTimeout(() => { $("#divProfilePicture").css("opacity", 1); }, 500);
+
+        $("#btnCancelImg").on("click", function () {
+
+            $.ajax({
+                url: '/Usuario/removerImagemDePerfil',
+                type: 'POST',
+                success: function (response) {
+                    setTimeout(() => { $("#staticBackdrop").modal('hide'); }, 500);
+                    $("#NavBarProfilePicture").css("opacity", 0);
+                    getProfilePicture();
+                    setTimeout(() => { $("#NavBarProfilePicture").attr('src', $("#profilePicture").attr('src')); }, 1000);
+                    setTimeout(() => { $("#NavBarProfilePicture").css("opacity", 1); }, 1000);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error removing profile image: ", error);
+                }
+            });
+        });
+
+    });
+
+</script>

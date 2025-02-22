@@ -1,0 +1,41 @@
+<style>
+
+        body {
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+
+        textarea {
+            width: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form name="sqlAdminExecute" id="sqlAdminExecute" method="POST">
+            <p>
+                <textarea rows="10" style="resize: none; padding: 15px; background-color: transparent; color: green" placeholder="SQL" autofocus></textarea>
+            </p>
+            <select class="form-select" style="width: 250px; display: inline; margin-right: 20px;">
+                <option selected hidden>Select method</option>
+                <option>SELECT</option>
+                <option>UPDATE</option>
+                <option>INSERT</option>
+                <option>DELETE</option>
+                <option>STATUS</option>
+            </select>
+            <button class="btn btn-primary" type="submit" disabled>Send</button>
+        </form>
+        <textarea readonly rows="20" style="resize: none; padding: 15px; background-color: transparent; color: green" placeholder="Result"></textarea>
+    </div>
+</body>
+</html>

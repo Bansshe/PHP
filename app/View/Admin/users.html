@@ -1,0 +1,108 @@
+<style>
+  table {
+    margin-top: 1%;
+    margin-left: 1%;
+    margin-right: 1%;
+    width: 98%;
+  }
+
+  table tr th {
+    padding-bottom: 10px;
+    border-bottom: solid;
+  }
+
+  table tr td {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    cursor: pointer;
+  }
+
+  .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 75%;
+        max-width: 600px;
+        position: relative;
+        top: 20%; 
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+</style>
+<body>
+  <div id="myModal" class="modal">
+    <div class="modal-content">
+      <h2>Usuario</h2>
+      <div id="modalBody"></div>
+      <br>
+      <button class="btn btn-secondary" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>{{ _.Idioma('Code')}}</th>
+        <th>{{ _.Idioma('E-mail')}}</th>
+        <th>{{ _.Idioma('Name')}}</th>
+        <th>{{ _.Idioma('Phone')}}</th>
+        <th>{{ _.Idioma('ID Number')}}</th>
+        <th>{{ _.Idioma('Registration')}}</th>
+        <th>{{ _.Idioma('Active')}}</th>
+      </tr>
+    </thead>
+    {% for usuario in usuarios %}
+    <tr onclick="alert()">
+      <td>{{usuario.Id}}</td>
+      <td>{{usuario.Email}}</td>
+      <td>{{usuario.Nome}}</td>
+      <td>{{usuario.Tel}}</td>
+      <td>{{usuario.CPF}}</td>
+      <td>{{usuario.Registro}}</td>
+      <td>{{usuario.Ativo}}</td>
+      </tr>
+    {% endfor %}
+  </table>
+</body>
+</html>
+<script>
+  function exibirUsuario(id) {
+     alert('abrirUser'); 
+    }
+
+    function closeModal() {
+        document.getElementById("myModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        var modal = document.getElementById("myModal");
+        if (event.target == modal) {
+            closeModal();
+        }
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === "Escape") {
+            closeModal();
+        }
+    });
+    
+</script>
