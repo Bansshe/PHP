@@ -1,0 +1,55 @@
+<form id="registerForm" action="" method="POST">
+</div>
+    <div>
+        <label style="user-select: none;">{{ _.Idioma('Name') }}</label>
+        <input maxlength="200" type="text" name="name" id="inputName" required>
+    </div>
+    <div>
+        <label for="inputEmail" style="user-select: none;">{{ _.Idioma('E-mail') }}</label>
+        <input id="inputEmail" maxlength="50" type="email" name="email" value="" required>
+    </div>
+    <div>
+        <label style="user-select: none;">{{ _.Idioma('Password') }}</label>
+        <input maxlength="57" type="password" name="password" id="inputPassword" required>
+    </div>
+    <div>
+        <input id="btnSignin" type="submit" value="{{ _.Idioma('Register') }}">
+    </div>
+</form>
+<script>
+    $(document).ready(function () {
+        $('#registerForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var nome = $("#inputName").val();
+            var email = $("#inputEmail").val();
+            var senha = $("#inputPassword").val();
+
+            if (nome == "" || email == "" || senha == "") {
+                $("#errorMsg").removeAttr("hidden");
+                $("#errorMsg").html("Todos os campos são obrigatórios.");
+
+                return;
+            }
+
+            const formData = $(this).serialize();
+
+            $.ajax({
+                type: 'POST',
+                url: '/Autenticacao/Cadastrar',
+                data: formData,
+                success: function (response) {
+                    if(response.success) {
+                        window.location.href = "/";
+                    } else {
+                        $("#errorMsg").removeAttr("hidden");
+                        $("#errorMsg").html(response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Ocorreu um erro: ' + error + " " + xhr + " " + status);
+                }
+            });
+        });
+    });
+</script>

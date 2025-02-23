@@ -24,6 +24,28 @@ class UsuarioController
         }
     }
 
+    public function Cadastrar()
+    {
+        try {
+            $loader = new \Twig\Loader\FilesystemLoader('app/View/Usuario');
+            $twig = new \Twig\Environment($loader);
+            $template = $twig->load('Cadastrar.html');
+
+            $usuario = UsuarioModel::getUserById($_SESSION['id']);
+            
+            $parametros = array(
+                'Usuario' => $usuario,
+            );
+
+            $conteudo = $template->render($parametros);
+
+            echo $conteudo;
+
+        } catch (Exception $e) {
+            echo json_encode(['Erro ' => $e->getMessage()]);
+        }
+    }
+
     public function alterarImagemDePerfil() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if (isset($_POST['base64']) && isset($_POST['id'])) {
@@ -80,13 +102,11 @@ class UsuarioController
 
     public function trocarSenhaUsuario() {
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            $email = $_POST['email'];
             $senha = $_POST['senha'];
+            $novaSenha = $_POST['novaSenha'];
 
-            if($email && $senha) {
-
-                AutenticacaoModel::login($email, $senha);
-
+            if ($senha && $novaSenha) {
+                UsuarioModel::trocarSenhaUsuario($_SESSION['id'], $senha, $novaSenha);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Todos os campos são de preenchimento obrigatório']);
             }

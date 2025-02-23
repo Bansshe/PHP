@@ -4,70 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alterar Senha</title>
-    <style>
-        body {
-            margin-top: 15px;
-            background-size: cover;
-            height: 100vh;
-            justify-content: center;
-            align-items: center;
-        }
-        .container {
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            width: 500px;
-        }
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-            text-align: center;
-            user-select: none;
-        }
-        .form-group label {
-            font-weight: bold;
-            color: #555;
-            user-select: none;
-        }
-        .form-control {
-            background: transparent !important;
-            border-radius: 5px;
-            width: 95%;
-            padding: 10px;
-        }
-        .btn {
-            width: 50%;
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #007bff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-    <div class="container">
+    <div>
         <h2>Alterar Senha</h2>
         <form id="trocarSenhaForm" method="POST" action="/trocarSenhaUsuario" style="width: 100%;">
-            <div class="form-group mb-4">
+            <div>
                 <label for="email">Senha atual</label>
-                <input maxlength="60" class="form-control" id="email" name="email" type="password" required>
+                <input maxlength="60" id="senha" name="senha" type="password" required>
             </div>
-            <div class="form-group mb-4">
+            <div>
                 <label for="novaSenha">Nova senha</label>
-                <input maxlength="60" class="form-control" id="novaSenha" name="novaSenha" type="password" required>
+                <input maxlength="60" id="novaSenha" name="novaSenha" type="password" required>
             </div>
-            <div class="form-group mb-4">
+            <div>
                 <label for="confirmaSenha">Confirmar nova senha</label>
-                <input maxlength="60" class="form-control" id="confirmaSenha" name="confirmaSenha" type="password" required>
+                <input maxlength="60" id="confirmaSenha" name="confirmaSenha" type="password" required>
             </div>
-            <div style="text-align: center;">
-                <button class="btn" type="submit">Alterar</button>
+            <div>
+                <button type="submit">Alterar</button>
             </div>
         </form>
     </div>
