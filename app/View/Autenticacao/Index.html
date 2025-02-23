@@ -1,69 +1,264 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="{{Empresa.Idioma}}">
 <head>
     <meta name="theme-color" content="#e3464c">
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Login</title>
-    <script src="https://accounts.google.com/gsi/client" async></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
     <script src="https://unpkg.com/jwt-decode@3.1.2/build/jwt-decode.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #bodyLogin {
+            background-color: white;
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            user-select: none;
+        }
+
+        .logo img {
+            max-width: 120px;
+            height: auto;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form div {
+            margin-bottom: 15px;
+        }
+
+        label {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
+            user-select: none;
+        }
+
+        a {
+            user-select: none;
+        }
+
+        input[type="email"],
+        input[type="password"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #4CAF50;
+            outline: none;
+            background-color: #ffffff;
+        }
+
+        #errorMsg {
+            font-size: 12px;
+            color: red;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            font-size: 16px;
+            padding: 12px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            position: relative;
+            width: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, opacity 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        #divBtnLogin {
+            text-align: center;
+            position: relative;
+        }
+
+        #loading {
+            display: none;
+            position: absolute;
+            left: auto;
+            margin-top: 14px;
+            transform: translateX(-50%) translateY(-50%);
+            border: 3px solid #4fb34c;
+            border-top: 3px solid #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            cursor: default;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #btnSignin {
+            text-align: center;
+        }
+
+        .g_id_signin {
+            width: 100%;
+            padding: 10px;
+            font-size: 12px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            margin-top: 100px;
+        }
+    </style>
 </head>
 <body id="bodyLogin">
     <div>
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="Logo">
+        </div>
         <form id="loginForm" action="" method="POST">
+            <div>
+                <label for="inputEmail">E-mail</label>
+                <input id="inputEmail" maxlength="50" type="email" name="email" value="" required>
             </div>
-                <div>
-                    <label for="inputEmail" style="user-select: none;">E-mail</label>
-                    <input id="inputEmail" maxlength="50" type="email" name="email" value="" required>
-                </div>
-                <div>
-                    <label style="user-select: none;">Password</label>
-                    <input maxlength="57" type="password" name="senha" id="inputSenha" required>
-                </div>
-                <div style="margin-bottom: 15px; text-align: center; font-weight: bold; color: red; font-size: 11px">
-                    <span id="errorMsg" hidden>Error!</span>
-                </div>
-                <div>
-                    <input id="btnSignin" type="submit" value="Login">
-                </div>
+            <div>
+                <label for="inputSenha">Senha</label>
+                <input id="inputSenha" maxlength="57" type="password" name="senha" required>
+            </div>
+            <div style="margin-bottom: 15px; text-align: center; font-weight: bold; color: red; font-size: 11px">
+                <span style="user-select: none;" id="errorMsg" hidden>Error!</span>
+            </div>
+            <div id="divBtnLogin" style="display: flex; justify-content: center; align-items: center; text-align: center; position: relative;">
+                <input id="btnSignin" type="submit" value="Login">
+                <div id="loading" class="loading-spinner"></div>
+            </div>
         </form>
+        <div style="margin-top: 20px;">
+            <div class="g_id_signin" id="googleSignIn"></div>
+        </div>
     </div>
+    <script>
+        function startLoading() {
+            $("#btnSignin").val("");
+            $("#btnSignin").css("opacity", 0);
+            $("#loading").css("opacity", 1).show();
+            $("#btnSignin").css("cursor", "default");
+        }
+
+        function stopLoading() {
+            $("#btnSignin").val("Login");
+            $("#loading").hide();
+            $("#btnSignin").prop("disabled", false);
+            $("#btnSignin").css("opacity", 1);
+            $("#btnSignin").css("cursor", "pointer");
+        }
+
+        $(document).ready(function () {
+            $('#loginForm').on('submit', function (e) {
+                e.preventDefault();
+
+                var email = $("#inputEmail").val();
+                var senha = $("#inputSenha").val();
+
+                if (email === "" || senha === "") {
+                    $("#errorMsg").removeAttr("hidden");
+                    $("#errorMsg").html("Email e senha obrigatórios!");
+                    return;
+                }
+
+                startLoading();
+
+                const formData = $(this).serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Autenticacao/Login',
+                    data: formData,
+                    success: function (response) {
+                        if(response.success) {
+                            window.location.href = "/";
+                        } else {
+                            stopLoading();
+                            $("#errorMsg").removeAttr("hidden");
+                            $("#errorMsg").html(response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        stopLoading();
+                        console.error('Ocorreu um erro: ' + error + " " + xhr + " " + status);
+                    }
+                });
+            });
+
+            google.accounts.id.initialize({
+                client_id: '',
+                callback: handleCredentialResponse
+            });
+
+            google.accounts.id.renderButton(
+                document.getElementById("googleSignIn"),
+                { theme: "outline", size: "large" }
+            );
+
+            function handleCredentialResponse(response) {
+                startLoading()
+                var responsePayload = jwt_decode(response.credential);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Autenticacao/GoogleLogin',
+                    data: { token: response.credential },
+                    success: function(response) {
+                        if (response.success) {
+                            window.location.href = "/";
+                        } else {
+                            stopLoading();
+                            console.log(response.message);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
-<script>
-    $(document).ready(function () {
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault();
-
-            var email = $("#inputEmail").val();
-            var senha = $("#inputSenha").val();
-
-            if (email == "" || senha == "") {
-                $("#errorMsg").removeAttr("hidden");
-                $("#errorMsg").html("Email e senha obrigatorios!");
-                return;
-            }
-
-            const formData = $(this).serialize();
-
-            $.ajax({
-                type: 'POST',
-                url: '/Autenticacao/Login',
-                data: formData,
-                success: function (response) {
-                    if(response.success) {
-                        window.location.href = "/";
-                    } else {
-                        $("#errorMsg").removeAttr("hidden");
-                        $("#errorMsg").html(response.message);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Ocorreu um erro: ' + error + " " + xhr + " " + status);
-                }
-            });
-        });
-    });
-</script>

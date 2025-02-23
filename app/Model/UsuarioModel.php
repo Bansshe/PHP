@@ -115,33 +115,34 @@ class UsuarioModel
         }
     }
 
-    public static function trocarSenhaUsuario(int $id, string $email, string $novaSenha) {
+    public static function trocarSenhaUsuario(string $id, string $senha, string $novaSenha) {
         $conn = Connection::getConn();
         header('Content-Type: application/json');
         try {
-            $sql = "SELECT Password, Hash FROM users WHERE Id = :id";
+            $sql = "SELECT Password, Salt FROM users WHERE Id = :id";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id, PDO::PARAM_STR);
             $stmt->execute();
-    
             $userData = $stmt->fetch(PDO::FETCH_ASSOC);
-            
+            $oldSalted = $senha . $userData['Salt'];
+            $newSalted = $novaSenha . $userData['Salt'];
+            $options = [ 'cost' => 15, ];
+            $hashed = password_hash($newSalted, PASSWORD_BCRYPT, $options);
+
             if (!$userData) {
                 echo json_encode(['success' => false, 'message' => 'Usuário não encontrado!']);
                 return;
             }
     
-            if (!password_verify($email, $userData['Password'])) {
+            if (!password_verify($oldSalted, $userData['Password'])) {
                 echo json_encode(['success' => false, 'message' => 'Senha atual incorreta!']);
                 return;
             }
     
-            $novaSenhaHash = password_hash($novaSenha, PASSWORD_DEFAULT);
-    
             $sql = "UPDATE users SET Password = :novaSenha WHERE Id = :id";
             $stmt = $conn->prepare($sql);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->bindParam(':novaSenha', $novaSenhaHash, PDO::PARAM_STR);
+            $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+            $stmt->bindParam(':novaSenha', $hashed, PDO::PARAM_STR);
             $stmt->execute();
 
             echo json_encode(['success' => true, 'message' => 'A senha foi alterada!']);
@@ -155,4 +156,42 @@ class UsuarioModel
         }
     }
     
+    public static function Cadastrar(string $nome, string $email, string $senha)
+    {
+        $conn = Connection::getConn();
+
+        try {
+            $sql = "SELECT Login FROM users WHERE Login = :login";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':login', $email, PDO::PARAM_STR);
+            $stmt->execute();
+
+            $usuario = $stmt->fetchObject('UsuarioModel');
+
+            if ($usuario) {
+                throw new Exception('Esse e-mail ja foi cadastrado!');
+            } else {
+                $salt = bin2hex(random_bytes(16));
+
+                if (strlen($senha) + strlen($salt) > 64) {
+                    $salt = bin2hex(random_bytes(12));
+                }
+                
+                $options = [ 'cost' => 15, ];
+                $salted = $senha . $salt;
+                $hashed = password_hash($salted, PASSWORD_BCRYPT, $options);
+                $sql = "INSERT INTO users (Login, Name, Password, Salt, Active) VALUES (:login, :name, :password, :salt, 1)";
+                $stmt = $conn->prepare($sql);   
+                $stmt->bindParam(':login', $email, PDO::PARAM_STR);
+                $stmt->bindParam(':name', $nome, PDO::PARAM_STR);
+                $stmt->bindParam(':password', $hashed, PDO::PARAM_STR);
+                $stmt->bindParam(':salt', $salt, PDO::PARAM_STR);
+                $stmt->execute();
+            }
+
+        } catch (PDOException $e) {
+            Connection::closeConn();
+            throw new Exception('Erro: ' . $e->getMessage());
+        }
+    }
 }
