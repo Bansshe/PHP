@@ -107,4 +107,74 @@ class AutenticacaoController
     private function isValidSignature($header, $payload, $signature) {
         return true; 
     }
+
+    public static function EsqueciMinhaSenha()
+    {
+        if(!isset($_SESSION['id'])) {
+
+            try {
+                $loader = new \Twig\Loader\FilesystemLoader('app/View/Autenticacao');
+                $twig = new \Twig\Environment($loader);
+                $template = $twig->load('EsqueciMinhaSenha.html');
+                $conteudo = $template->render();
+                
+                echo $conteudo;
+                
+            } catch (Exception $e) {
+                echo json_encode(['Erro ' => $e->getMessage()]);
+            }
+        } else {
+            header("Location: /");
+        }
+        exit();
+    }
+
+    public static function RecuperarSenha()
+    {
+        if(!isset($_SESSION['id'])) {
+
+            try {
+                $loader = new \Twig\Loader\FilesystemLoader('app/View/Autenticacao');
+                $twig = new \Twig\Environment($loader);
+                $template = $twig->load('RecuperarSenha.html');
+                $conteudo = $template->render();
+                
+                echo $conteudo;
+                
+            } catch (Exception $e) {
+                echo json_encode(['Erro ' => $e->getMessage()]);
+            }
+        } else {
+            header("Location: /");
+        }
+        exit();
+    }
+
+    public static function NovaSenha(string $token = null)
+    {
+        if (!isset($_SESSION['id'])) {
+            try {
+                $token = isset($_GET['param']) ? $_GET['param'] : $token;
+
+                $loader = new \Twig\Loader\FilesystemLoader('app/View/Autenticacao');
+                $twig = new \Twig\Environment($loader);
+                $template = $twig->load('NovaSenha.html');
+                
+                if ($token) {
+                    echo "Token recebido: " . $token;
+                } else {
+                    echo "Nenhum token foi fornecido.";
+                }
+                
+                $conteudo = $template->render();
+                echo $conteudo;
+                
+            } catch (Exception $e) {
+                echo json_encode(['Erro' => $e->getMessage()]);
+            }
+        } else {
+            header("Location: /");
+        }
+        exit();
+    }
 }

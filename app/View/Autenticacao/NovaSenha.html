@@ -5,8 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>Login</title>
-    <script src="https://accounts.google.com/gsi/client"></script>
+    <title>Recuperar senha</title>
     <script src="https://unpkg.com/jwt-decode@3.1.2/build/jwt-decode.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <style>
@@ -63,18 +62,17 @@
             user-select: none;
         }
 
-        input[type="email"],
+        input[type="text"],
         input[type="password"] {
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 5px;
-            width: 100%;
+            width: 90%;
             background-color: #f9f9f9;
             color: #333;
         }
 
-        input[type="email"]:focus,
         input[type="password"]:focus {
             border-color: #4CAF50;
             outline: none;
@@ -138,17 +136,6 @@
         #btnSignin {
             text-align: center;
         }
-
-        .g_id_signin {
-            width: 100%;
-            padding: 10px;
-            font-size: 12px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            margin-top: 100px;
-        }
     </style>
 </head>
 <body id="bodyLogin">
@@ -158,32 +145,30 @@
         </div>
         <form id="loginForm" action="" method="POST">
             <div>
-                <label for="inputEmail">E-mail</label>
-                <input id="inputEmail" maxlength="50" type="email" name="email" value="" required>
+                <label for="inputEmail">Email</label>
+                <input style="background-color: rgb(230, 230, 230)" id="inputEmail" maxlength="50" type="text" name="novaSenha" value="bansshe@hotmail.com" disabled>
             </div>
             <div>
-                <label for="inputSenha">Senha</label>
-                <input id="inputSenha" maxlength="57" type="password" name="senha" required>
+                <label for="inputNovaSenha">Nova senha</label>
+                <input id="inputNovaSenha" maxlength="50" type="password" name="novaSenha" value="" required>
+            </div>
+            <div>
+                <label for="inputConfirmarSenha">Confirmar nova senha</label>
+                <input id="inputConfirmarSenha" maxlength="50" type="password" name="ConfirmarSenha" value="" required>
             </div>
             <div style="margin-bottom: 15px; text-align: center; font-weight: bold; color: red; font-size: 11px">
                 <span style="user-select: none;" id="errorMsg" hidden>Houve um problema na autenticação!</span>
             </div>
             <div id="divBtnLogin" style="display: flex; justify-content: center; align-items: center; text-align: center; position: relative;">
-                <input id="btnSignin" type="submit" value="Login">
+                <input id="btnSignin" type="submit" value="Salvar">
                 <div id="loading" class="loading-spinner"></div>
             </div>
             <div style="display: flex">
                 <div style="margin-right: 95px;">
-                    <a href="/Autenticacao/EsqueciMinhaSenha" style="font-size: 12px; text-decoration: none; text-align: left;">Esqueci minha senha</a>
-                </div>
-                <div>
-                    <a href="#" style="font-size: 12px; text-decoration: none; text-align: left;">Cadastrar</a>
+                    <a href="/" style="font-size: 12px; text-decoration: none; text-align: left;">Voltar a tela de login</a>
                 </div>
             </div>
         </form>
-        <div style="margin-top: 20px;">
-            <div class="g_id_signin" id="googleSignIn"></div>
-        </div>
     </div>
     <script>
         function startLoading() {
@@ -237,35 +222,6 @@
                     }
                 });
             });
-
-            google.accounts.id.initialize({
-                client_id: '',
-                callback: handleCredentialResponse
-            });
-
-            google.accounts.id.renderButton(
-                document.getElementById("googleSignIn"),
-                { theme: "outline", size: "large" }
-            );
-
-            function handleCredentialResponse(response) {
-                startLoading()
-                var responsePayload = jwt_decode(response.credential);
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/Autenticacao/GoogleLogin',
-                    data: { token: response.credential },
-                    success: function(response) {
-                        if (response.success) {
-                            window.location.href = "/";
-                        } else {
-                            stopLoading();
-                            console.log(response.message);
-                        }
-                    }
-                });
-            }
         });
     </script>
 </body>
