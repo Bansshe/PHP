@@ -14,7 +14,7 @@ class Core
             $action = 'index';
         }
 
-        call_user_func([$controller, $action], ['id' => $id]);
+        call_user_func([$controller, $action], ['param' => $id]);
     }
 
     private function getController($urlGet)

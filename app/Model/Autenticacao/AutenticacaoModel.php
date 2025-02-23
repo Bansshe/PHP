@@ -20,8 +20,7 @@ class AutenticacaoModel
                 return;
             }
 
-            if ($userData['Active'] != 1) 
-            {
+            if ($userData['Active'] != 1) {
                 echo json_encode(['success' => false, 'message' => 'Usuario inativo, entre em contato com seu administrador!']);
 
                 return;

@@ -5,8 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <title>Login</title>
-    <script src="https://accounts.google.com/gsi/client"></script>
+    <title>Recuperar senha</title>
     <script src="https://unpkg.com/jwt-decode@3.1.2/build/jwt-decode.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <style>
@@ -63,19 +62,18 @@
             user-select: none;
         }
 
-        input[type="email"],
-        input[type="password"] {
-            padding: 10px;
-            font-size: 16px;
+        input[type="text"] {
+            padding: 5px;
+            font-size: 22px;
             border: 1px solid #ddd;
+            letter-spacing: 5px;
             border-radius: 5px;
-            width: 100%;
+            width: 50%;
             background-color: #f9f9f9;
             color: #333;
         }
 
-        input[type="email"]:focus,
-        input[type="password"]:focus {
+        input[type="text"]:focus {
             border-color: #4CAF50;
             outline: none;
             background-color: #ffffff;
@@ -138,17 +136,6 @@
         #btnSignin {
             text-align: center;
         }
-
-        .g_id_signin {
-            width: 100%;
-            padding: 10px;
-            font-size: 12px;
-            border: none;
-            border-radius: 5px;
-            color: white;
-            cursor: pointer;
-            margin-top: 100px;
-        }
     </style>
 </head>
 <body id="bodyLogin">
@@ -157,33 +144,25 @@
             <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="Logo">
         </div>
         <form id="loginForm" action="" method="POST">
-            <div>
-                <label for="inputEmail">E-mail</label>
-                <input id="inputEmail" maxlength="50" type="email" name="email" value="" required>
-            </div>
-            <div>
-                <label for="inputSenha">Senha</label>
-                <input id="inputSenha" maxlength="57" type="password" name="senha" required>
+            <div style="text-align: center;">
+                <label for="inputToken">Código de recuperação</label>
+                <br>
+                <br>
+                <input id="inputToken" style="text-align: center;" maxlength="6" type="text" name="token" value="" required>
             </div>
             <div style="margin-bottom: 15px; text-align: center; font-weight: bold; color: red; font-size: 11px">
                 <span style="user-select: none;" id="errorMsg" hidden>Houve um problema na autenticação!</span>
             </div>
             <div id="divBtnLogin" style="display: flex; justify-content: center; align-items: center; text-align: center; position: relative;">
-                <input id="btnSignin" type="submit" value="Login">
+                <input id="btnSignin" type="submit" value="Trocar senha">
                 <div id="loading" class="loading-spinner"></div>
             </div>
-            <div style="display: flex">
-                <div style="margin-right: 95px;">
-                    <a href="/Autenticacao/EsqueciMinhaSenha" style="font-size: 12px; text-decoration: none; text-align: left;">Esqueci minha senha</a>
-                </div>
+            <div style="text-align: center;">
                 <div>
-                    <a href="#" style="font-size: 12px; text-decoration: none; text-align: left;">Cadastrar</a>
+                    <a href="/Autenticacao/EsqueciMinhaSenha" style="font-size: 12px; text-decoration: none; text-align: left;">Não recebi o código</a>
                 </div>
             </div>
         </form>
-        <div style="margin-top: 20px;">
-            <div class="g_id_signin" id="googleSignIn"></div>
-        </div>
     </div>
     <script>
         function startLoading() {
@@ -237,36 +216,7 @@
                     }
                 });
             });
-
-            google.accounts.id.initialize({
-                client_id: '',
-                callback: handleCredentialResponse
-            });
-
-            google.accounts.id.renderButton(
-                document.getElementById("googleSignIn"),
-                { theme: "outline", size: "large" }
-            );
-
-            function handleCredentialResponse(response) {
-                startLoading()
-                var responsePayload = jwt_decode(response.credential);
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/Autenticacao/GoogleLogin',
-                    data: { token: response.credential },
-                    success: function(response) {
-                        if (response.success) {
-                            window.location.href = "/";
-                        } else {
-                            stopLoading();
-                            console.log(response.message);
-                        }
-                    }
-                });
-            }
         });
     </script>
 </body>
-</html>
+</html> 
